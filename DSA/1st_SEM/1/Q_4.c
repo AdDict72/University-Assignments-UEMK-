@@ -1,0 +1,38 @@
+#include<stdio.h>
+
+//we are usimng bubble sort
+int sortArr(int arr[],int count){
+    int i,j,temp;
+    for (i = 0; i < count-1; i++)
+    {
+        for (j = 0; j < count-i-1; j++)
+        {
+            if (arr[j] > arr[j+1])
+            {
+                temp = arr[j];
+                arr[j] = arr[j+1];
+                arr[j+1] =temp;               
+            }            
+        }            
+    }
+}
+int main(){
+    int count;
+    printf("Enter the number of elements in the array : ");
+    scanf("%d",&count);
+    int arr[count];
+    printf("Enter the elements in the array : ");
+    for (int i = 0; i < count; i++)
+    {
+        scanf("%d",&arr[i]);     
+    }
+    sortArr(arr,count);
+
+    printf("Sorted array: ");
+    for (int i = 0; i < count; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    return 0;
+}

@@ -43,7 +43,7 @@ def halstead_metrics(operators, operands):
         "Program Length (N)": N,
         "Vocabulary (eta)": eta,
         "Volume (V)": V,
-        "Estimated Length (N̂)": N_hat,
+        "Estimated Length ": N_hat,
         "Implementation Level (L)": L,
         "Potential Volume (v)": v,
         "Effort (E)": E,
