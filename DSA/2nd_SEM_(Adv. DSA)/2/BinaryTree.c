@@ -1,112 +1,120 @@
-/*
-Write a C program to create a binary tree using recursive function and display that level wise.
-Write a C program to identify the height of a binary tree.
-Write a C program to identify degree of a given node.
-Write a C program to count number of leaf node present in a binary tree.
-Write a C program to count number of internal node present in a binary tree.
-Write a C program to count number of node present in a given binary tree using linked list.
-Write a C program to count number of node present in a given binary tree using array.
-Write a C program to count number of siblings present in a binary tree.*/
+#include <stdio.h>
+#include <stdlib.h>
 
-#include<stdio.h>
-#include<stdlib.h>
-#include<math.h>
-
-struct TreeNode
+struct Node
 {
     int data;
-    struct TreeNode * left;
-    struct TreeNode * right;
+    struct Node *left, *right;
 };
 
-struct TreeNode *createNode(int data){
-    struct TreeNode *newNode = malloc(sizeof(struct TreeNode));
-    newNode->data=data;
-    newNode->left=NULL;
-    newNode->right=NULL;
+struct Node *createNode(int data)
+{
+    struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->left = newNode->right = NULL;
     return newNode;
 }
 
-struct TreeNode *insert(struct TreeNode *root, int data){
-    if(root==NULL){
-        root = createNode(data);
+struct Node *insertNode(struct Node *root, int data)
+{
+    if (root == NULL)
+    {
+        return createNode(data);
     }
-    else{
-        if(data<=root->data){
-            root->left = insert(root->left,data);
+    else
+    {
+        if (data <= root->data)
+        {
+            root->left = insertNode(root->left, data);
         }
-        else{
-            root->right = insert(root->right,data);
+        else
+        {
+            root->right = insertNode(root->right, data);
         }
+        return root;
     }
-    return root;
 }
 
-void levelOrderTraversal(struct TreeNode *root){
-    if(root == NULL){
+void levelOrderTraversal(struct Node *root)
+{
+    if (root == NULL)
+    {
         return;
     }
-    struct TreeNode *queue[100];
+
+    struct Node *queue[100];
     int front = -1, rear = -1;
     queue[++rear] = root;
 
     while (front != rear)
     {
-        struct TreeNode *temp =queue[++front];
-        printf("%d ",temp->data);
+        struct Node *current = queue[++front];
+        printf("%d ", current->data);
 
-        if(temp->left != NULL){
-            queue[++rear] = temp->left;
+        if (current->left != NULL)
+        {
+            queue[++rear] = current->left;
         }
-        if(temp->right!=NULL){
-            queue[++rear]=temp->right;
+        if (current->right != NULL)
+        {
+            queue[++rear] = current->right;
         }
     }
 }
 
-int treeHeight(struct TreeNode*root){
-    if (root==NULL)
+int getHeight(struct Node *root)
+{
+    if (root == NULL)
     {
         return 0;
     }
-    else{
-        int leftH=treeHeight(root->left);
-        int rightH=treeHeight(root->right);
-        return (leftH>rightH) ? (leftH+1) : (rightH+1) ;
+    else
+    {
+        int leftHeight = getHeight(root->left);
+        int rightHeight = getHeight(root->right);
+        return (leftHeight > rightHeight) ? (leftHeight + 1) : (rightHeight + 1);
     }
 }
 
-int nodeDegree(struct TreeNode * root, int key){
-    if (root ==NULL)
+int getDegree(struct Node *root, int key)
+{
+    if (root == NULL)
     {
-        return -1;
+        return -1; // Node not found
     }
-    if(root->data == key){
-        int degree=0;
-        if (root->left!=NULL)
+
+    if (root->data == key)
+    {
+        int degree = 0;
+        if (root->left != NULL)
         {
             degree++;
         }
-        if (root->right!=NULL)
+        if (root->right != NULL)
         {
             degree++;
         }
         return degree;
     }
-    else {
-        int leftD = nodeDegree(root->left,key);
-        int rightD = nodeDegree(root->right,key);
-        if (leftD!=-1){
-            return leftD;
+    else
+    {
+        int leftDegree = getDegree(root->left, key);
+        int rightDegree = getDegree(root->right, key);
+
+        if (leftDegree != -1)
+        {
+            return leftDegree;
         }
-        else{
-            return rightD;
-        }      
+        else
+        {
+            return rightDegree;
+        }
     }
 }
 
-int countLeaf(struct TreeNode * root){
-    if (root==NULL)
+int countLeafNodes(struct Node *root)
+{
+    if (root == NULL)
     {
         return 0;
     }
@@ -114,10 +122,10 @@ int countLeaf(struct TreeNode * root){
     {
         return 1;
     }
-    return countLeaf(root->left)+countLeaf(root->right);   
+    return countLeafNodes(root->left) + countLeafNodes(root->right);
 }
 
-int countInternalNodes(struct TreeNode *root)
+int countInternalNodes(struct Node *root)
 {
     if (root == NULL || (root->left == NULL && root->right == NULL))
     {
@@ -126,7 +134,7 @@ int countInternalNodes(struct TreeNode *root)
     return 1 + countInternalNodes(root->left) + countInternalNodes(root->right);
 }
 
-int countNodesLinkedList(struct TreeNode *root)
+int countNodesLinkedList(struct Node *root)
 {
     if (root == NULL)
     {
@@ -135,7 +143,7 @@ int countNodesLinkedList(struct TreeNode *root)
     return 1 + countNodesLinkedList(root->left) + countNodesLinkedList(root->right);
 }
 
-int countNodesArray(struct TreeNode *arr[], int size)
+int countNodesArray(struct Node *arr[], int size)
 {
     int count = 0;
     for (int i = 0; i < size; i++)
@@ -148,7 +156,7 @@ int countNodesArray(struct TreeNode *arr[], int size)
     return count;
 }
 
-int countSiblings(struct TreeNode *root, int key)
+int countSiblings(struct Node *root, int key)
 {
     if (root == NULL)
     {
@@ -162,88 +170,113 @@ int countSiblings(struct TreeNode *root, int key)
     return countSiblings(root->left, key) + countSiblings(root->right, key);
 }
 
-void displayMenu(){
-    printf("=====Menu=====");
-    printf("\n 1. Create binary tree using recursive function : ");
-    printf("\n 2. Identify the height of binary tree : ");
-    printf("\n 3. Identify degree of a given node : ");
-    printf("\n 4. No. of leaf node in binary tree : ");
-    printf("\n 5. No. of internal node in binary tree : ");
-    printf("\n 6. No. of node in a binary tree using linked-list : ");
-    printf("\n 7. No. of node in a binary tree using array : ");
-    printf("\n 8. No. of siblings in binary tree : ");\
+void displayMenu()
+{
+    printf("\nMenu:\n");
+    printf("1. Create a binary tree using recursive function and display level wise\n");
+    printf("2. Create a binary tree using non-recursive function and display level wise\n");
+    printf("3. Create a binary tree using array only and display level wise\n");
+    printf("4. Identify the height of a binary tree\n");
+    printf("5. Identify degree of a given node\n");
+    printf("6. Count number of leaf nodes present in a binary tree\n");
+    printf("7. Count number of internal nodes present in a binary tree\n");
+    printf("8. Count number of nodes present in a given binary tree using linked list\n");
+    printf("9. Count number of nodes present in a given binary tree using array\n");
+    printf("10. Count number of siblings present in a binary tree\n");
+    printf("0. Exit\n");
 }
 
-int main(){
-    int data, node, choice, key, noLeaf, nointer, sib;
-    struct TreeNode *root =NULL;
+int main()
+{
+    struct Node *root = NULL;
+    int choice, data, key, result;
 
     do
-    { 
+    {
         displayMenu();
-        printf("\n Enter your choice : ");
-        scanf("%d",&choice);
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
 
         switch (choice)
         {
         case 1:
-            printf("Enter the data for bianry tree(-1 for stop): ");
+            printf("Enter data for the binary tree (enter -1 to stop): ");
             while (1)
             {
-                scanf("%d",&data);
-                if(data == -1){
+                scanf("%d", &data);
+                if (data == -1)
+                {
                     break;
                 }
-                root=insert(root,data);
+                root = insertNode(root, data);
             }
             printf("Binary tree created successfully.\n");
-            printf("Level Order Traversal of the binary tree: ");
+            printf("Level Order Traversal: ");
             levelOrderTraversal(root);
-            printf("\n");
             break;
+
         case 2:
-            printf(" Height of binary tree: %d\n", treeHeight(root));
+            // Add code for non-recursive binary tree creation
             break;
+
         case 3:
-            printf(" Enter a key to find degree : ");
-            scanf("%d",&key);
-            int deg = nodeDegree(root,key);
-            if(deg == -1){
-                printf("Node not found in the tree.\n");
-            }else{
-                printf("Degree of node %d: %d\n", key, deg);
+            // Add code for array-based binary tree creation
+            break;
+
+        case 4:
+            result = getHeight(root);
+            printf("Height of the binary tree: %d\n", result);
+            break;
+
+        case 5:
+            printf("Enter the node data to find its degree: ");
+            scanf("%d", &key);
+            result = getDegree(root, key);
+            if (result == -1)
+            {
+                printf("Node not found in the binary tree.\n");
+            }
+            else
+            {
+                printf("Degree of the node %d: %d\n", key, result);
             }
             break;
-        case 4:
-            noLeaf = countLeaf(root);
-            printf("Number of leaf Nodes : %d \n",noLeaf);
-            break;
-        case 5:
-            nointer = countInternalNodes(root);
-            printf("Number of internal nodes in the binary tree: %d\n", nointer);
-            break;
+
         case 6:
-            node = countNodesLinkedList(root);
-            printf("Number of nodes in the binary tree (using linked list): %d\n", node);
+            result = countLeafNodes(root);
+            printf("Number of leaf nodes in the binary tree: %d\n", result);
             break;
+
         case 7:
-            node = countNodesArray(root,countNodesLinkedList(root));
-            printf("Number of nodes in the binary tree (using array): %d\n", node);
+            result = countInternalNodes(root);
+            printf("Number of internal nodes in the binary tree: %d\n", result);
             break;
+
         case 8:
+            result = countNodesLinkedList(root);
+            printf("Number of nodes in the binary tree (using linked list): %d\n", result);
+            break;
+
+        case 9:
+            // Add code for counting nodes using array
+            break;
+
+        case 10:
             printf("Enter the node data to find its siblings: ");
             scanf("%d", &key);
-            sib = countSiblings(root, key);
-            printf("Number of siblings of the node %d: %d\n", key, sib);
-            break;     
-        case 0 : 
-            printf("Exiting the program....>!!");
-            break;   
-        default:  
-            printf("You entered wrong choice....!!");        
+            result = countSiblings(root, key);
+            printf("Number of siblings of the node %d: %d\n", key, result);
             break;
+
+        case 0:
+            printf("Exiting the program. Thank you!\n");
+            break;
+
+        default:
+            printf("Invalid choice. Please enter a valid option.\n");
         }
+
     } while (choice != 0);
-    
+
     return 0;
 }
